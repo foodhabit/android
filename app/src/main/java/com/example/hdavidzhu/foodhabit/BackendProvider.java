@@ -1,7 +1,8 @@
 package com.example.hdavidzhu.foodhabit;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 // TODO: Potentially change the name of this class
@@ -20,9 +21,9 @@ public class BackendProvider {
 
     private BackendProvider() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://google.com")
+                .baseUrl("https://f1061500.ngrok.io/") // TODO: Change this to a permanent endpoint.
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
         apiService = retrofit.create(ApiService.class);

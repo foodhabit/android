@@ -20,11 +20,20 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+
     String currentPhotoPath;
+    private File photoFile;
+    private Uri photoURI;
 
     @BindView(R.id.picture)
     ImageView imageView;
@@ -50,23 +59,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
+        // Create an photoFile file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
+        photoFile = File.createTempFile(
                 imageFileName, // Prefix
                 ".jpg",        // Suffix
                 storageDir     // Directory
         );
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+        currentPhotoPath = photoFile.getAbsolutePath();
+        return photoFile;
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(
+                photoURI = FileProvider.getUriForFile(
                         this,
                         "com.example.hdavidzhu.foodhabit.fileprovider",
                         photoFile);
@@ -96,14 +105,30 @@ public class MainActivity extends AppCompatActivity {
         int photoW = bmpOptions.outWidth;
         int photoH = bmpOptions.outHeight;
 
-        // Determine how much to scale down the image
+        // Determine how much to scale down the photoFile
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
-        // Decode the image file into a bitmap sized to fill the view
+        // Decode the photoFile file into a bitmap sized to fill the view
         bmpOptions.inJustDecodeBounds = false;
         bmpOptions.inSampleSize = scaleFactor;
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmpOptions);
         imageView.setImageBitmap(bitmap);
+
+        // Send pic
+        // TODO: These methods should be refactored to be single purpose
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(photoURI)), photoFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", photoFile.getName(), requestFile);
+        BackendProvider.getInstance().getApi()
+                .postFoodImage(body)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(throwable -> {
+                    Timber.e(throwable.getMessage());
+                    return null;
+                })
+                .subscribe(food -> {
+                    Timber.e(String.valueOf(food.predictions));
+                });
     }
 }
