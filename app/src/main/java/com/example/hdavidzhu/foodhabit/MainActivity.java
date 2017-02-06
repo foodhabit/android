@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.btn_open_camera)
+    @OnClick(R.id.btn_take_picture)
     void onOpenCameraButtonClicked() {
         dispatchTakePictureIntent();
     }
