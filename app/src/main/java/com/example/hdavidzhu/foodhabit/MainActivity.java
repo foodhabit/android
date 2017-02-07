@@ -1,8 +1,7 @@
 package com.example.hdavidzhu.foodhabit;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,7 +9,11 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,18 +34,18 @@ public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    String currentPhotoPath;
     private File photoFile;
     private Uri photoURI;
 
     @BindView(R.id.picture)
-    ImageView imageView;
+    SubsamplingScaleImageView imageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        configureImageView();
     }
 
     @Override
@@ -51,6 +54,21 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setPic();
         }
+    }
+
+    private void configureImageView() {
+        GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (imageView.isReady()) {
+                    PointF sCoord = imageView.viewToSourceCoord(e.getX(), e.getY());
+                    Timber.d(sCoord.toString()); // TODO: Remove
+                }
+                return true;
+            }
+        });
+
+        imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -68,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 ".jpg",        // Suffix
                 storageDir     // Directory
         );
-        currentPhotoPath = photoFile.getAbsolutePath();
         return photoFile;
     }
 
@@ -94,26 +111,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setPic() {
-        // Get dimensions of the view
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
 
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmpOptions = new BitmapFactory.Options();
-        bmpOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(currentPhotoPath, bmpOptions);
-        int photoW = bmpOptions.outWidth;
-        int photoH = bmpOptions.outHeight;
-
-        // Determine how much to scale down the photoFile
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the photoFile file into a bitmap sized to fill the view
-        bmpOptions.inJustDecodeBounds = false;
-        bmpOptions.inSampleSize = scaleFactor;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmpOptions);
-        imageView.setImageBitmap(bitmap);
+        // TODO: This is a hack.
+        // TODO: URI gets destroyed when app goes into landscape mode. Consider caching.
+        imageView.setImage(ImageSource.uri(photoURI));
 
         // Send pic
         // TODO: These methods should be refactored to be single purpose
@@ -123,10 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 .postFoodImage(body)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(throwable -> {
-                    Timber.e(throwable.getMessage());
-                    return null;
-                })
+                .doOnError(throwable -> Timber.e(throwable.getMessage()))
                 .subscribe(food -> {
                     Timber.e(String.valueOf(food.predictions));
                 });
