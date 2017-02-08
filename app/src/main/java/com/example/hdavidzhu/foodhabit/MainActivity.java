@@ -13,7 +13,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Uri photoURI;
 
     @BindView(R.id.picture)
-    SubsamplingScaleImageView imageView;
+    PinView imageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 if (imageView.isReady()) {
                     PointF sCoord = imageView.viewToSourceCoord(e.getX(), e.getY());
                     Timber.d(sCoord.toString()); // TODO: Remove
+                    imageView.setPin(sCoord);
                 }
                 return true;
             }
