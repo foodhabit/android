@@ -1,6 +1,7 @@
 package com.example.hdavidzhu.foodhabit;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -8,18 +9,20 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 import static java.text.DateFormat.getDateTimeInstance;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FoodSelectedListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -27,12 +30,16 @@ public class MainActivity extends AppCompatActivity {
     private Uri photoUri;
     private FoodDisplayController foodDisplayController;
 
+    @BindView(R.id.cropped_food)
+    ImageView croppedFoodImageView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         foodDisplayController = new FoodDisplayController(this);
+        foodDisplayController.setFoodSelectedListener(this);
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -59,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
                         Timber.e(String.valueOf(food.predictions));
                     });
         }
+    }
+
+    public void onFoodSelected(Bitmap foodBitmap) {
+        croppedFoodImageView.setImageBitmap(foodBitmap);
     }
 
     private void dispatchTakePictureIntent() {

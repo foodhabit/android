@@ -44,7 +44,7 @@ public class BackendProvider {
 
     private BackendProvider() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://b5f6bdcb.ngrok.io") // TODO: Change this to a permanent endpoint.
+                .baseUrl("https://c19b88da.ngrok.io") // TODO: Change this to a permanent endpoint.
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();

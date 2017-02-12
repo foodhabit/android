@@ -20,6 +20,7 @@ import timber.log.Timber;
 public class FoodDisplayController {
 
     private Context context;
+    private FoodSelectedListener listener;
     private GestureDetector gestureDetector;
 
     @BindView(R.id.picture)
@@ -32,6 +33,10 @@ public class FoodDisplayController {
         ButterKnife.bind(this, (Activity) context);
         gestureDetector = createGestureDetector();
         imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
+    }
+
+    public void setFoodSelectedListener(FoodSelectedListener foodSelectedListener) {
+        listener = foodSelectedListener;
     }
 
     public void setPhotoUri(Uri photoUri) {
@@ -52,7 +57,13 @@ public class FoodDisplayController {
                     try {
                         Bitmap sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
                         // TODO: Choose a good crop size.
-                        Bitmap croppedImage = Bitmap.createBitmap(sourceBitmap, (int) e.getX(), (int) e.getY(), 200, 200);
+                        Bitmap croppedImage = Bitmap.createBitmap(
+                                sourceBitmap,
+                                (int) sCoord.x,
+                                (int) sCoord.y,
+                                sourceBitmap.getWidth() / 3,
+                                sourceBitmap.getHeight() / 3);
+                        listener.onFoodSelected(croppedImage);
                         BackendProvider.getInstance().analyzeFood(croppedImage).subscribe(food -> {
                             Timber.i(food.predictions.toString());
                         });
