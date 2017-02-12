@@ -9,5 +9,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Timber.plant(new Timber.DebugTree());
+        BackendProvider.getInstance().setContext(this);
     }
 }
