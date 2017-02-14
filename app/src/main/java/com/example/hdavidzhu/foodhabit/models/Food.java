@@ -1,7 +1,11 @@
 package com.example.hdavidzhu.foodhabit.models;
 
-import java.util.List;
-
 public class Food {
-    public List<String> predictions;
+    public String name;
+    public String ndbno;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

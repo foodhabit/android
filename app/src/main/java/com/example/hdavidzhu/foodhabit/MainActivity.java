@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements FoodSelectedListe
                     .getInstance()
                     .analyzeFood(photoFile)
                     .subscribe(food -> {
-                        Timber.e(String.valueOf(food.predictions));
+                        Timber.d(String.valueOf(food.predictions));
                     });
         }
     }

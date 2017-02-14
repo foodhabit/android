@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 
-import com.example.hdavidzhu.foodhabit.models.Food;
+import com.example.hdavidzhu.foodhabit.models.FoodPrediction;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
@@ -14,12 +14,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -43,8 +45,15 @@ public class BackendProvider {
     private ApiService apiService;
 
     private BackendProvider() {
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://c19b88da.ngrok.io") // TODO: Change this to a permanent endpoint.
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
@@ -60,7 +69,7 @@ public class BackendProvider {
         return apiService;
     }
 
-    public Observable<Food> analyzeFood(Bitmap foodBitmap) throws IOException {
+    public Observable<FoodPrediction> analyzeFood(Bitmap foodBitmap) throws IOException {
         return Observable.fromCallable(() -> {
             String timeStamp = getDateTimeInstance().format(new Date());
             String foodImageFileName = "JPEG_" + timeStamp + "_";
@@ -82,14 +91,14 @@ public class BackendProvider {
         }).concatMap(this::analyzeFood);
     }
 
-    public Observable<Food> analyzeFood(File foodImageFile) {
+    public Observable<FoodPrediction> analyzeFood(File foodImageFile) {
         String uriString = Uri.fromFile(foodImageFile).toString();
         return analyzeFood(
                 foodImageFile,
                 MediaType.parse(uriString.substring(uriString.lastIndexOf("."))));
     }
 
-    public Observable<Food> analyzeFood(File foodImageFile, MediaType mediaType) {
+    public Observable<FoodPrediction> analyzeFood(File foodImageFile, MediaType mediaType) {
         RequestBody requestFile = RequestBody.create(mediaType, foodImageFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", foodImageFile.getName(), requestFile);
         return BackendProvider.getInstance().getApi()

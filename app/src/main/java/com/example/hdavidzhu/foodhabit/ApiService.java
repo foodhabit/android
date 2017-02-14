@@ -1,6 +1,6 @@
 package com.example.hdavidzhu.foodhabit;
 
-import com.example.hdavidzhu.foodhabit.models.Food;
+import com.example.hdavidzhu.foodhabit.models.FoodPrediction;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
@@ -15,5 +15,5 @@ public interface ApiService {
 
     @Multipart
     @POST("food")
-    Observable<Food> postFoodImage(@Part MultipartBody.Part image);
+    Observable<FoodPrediction> postFoodImage(@Part MultipartBody.Part image);
 }
