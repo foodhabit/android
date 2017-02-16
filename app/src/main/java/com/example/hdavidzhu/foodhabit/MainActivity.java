@@ -9,29 +9,36 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+
+import com.example.hdavidzhu.foodhabit.models.Food;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static java.text.DateFormat.getDateTimeInstance;
 
-public class MainActivity extends AppCompatActivity implements FoodSelectedListener {
+public class MainActivity extends AppCompatActivity implements FoodDisplayControllerListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private File photoFile;
     private Uri photoUri;
     private FoodDisplayController foodDisplayController;
+    private FoodListAdapter foodListAdapter;
 
     @BindView(R.id.cropped_food)
     ImageView croppedFoodImageView;
+
+    @BindView(R.id.food_list)
+    RecyclerView foodListView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements FoodSelectedListe
         ButterKnife.bind(this);
         foodDisplayController = new FoodDisplayController(this);
         foodDisplayController.setFoodSelectedListener(this);
+
+        foodListAdapter = new FoodListAdapter();
+        foodListView.setAdapter(foodListAdapter);
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -63,13 +73,19 @@ public class MainActivity extends AppCompatActivity implements FoodSelectedListe
                     .getInstance()
                     .analyzeFood(photoFile)
                     .subscribe(food -> {
-                        Timber.d(String.valueOf(food.predictions));
+                        foodListAdapter.setFoodList(food.predictions);
                     });
         }
     }
 
-    public void onFoodSelected(Bitmap foodBitmap) {
+    @Override
+    public void onFoodImageSelected(Bitmap foodBitmap) {
         croppedFoodImageView.setImageBitmap(foodBitmap);
+    }
+
+    @Override
+    public void onFoodPredictionsReceived(List<Food> predictions) {
+        foodListAdapter.setFoodList(predictions);
     }
 
     private void dispatchTakePictureIntent() {

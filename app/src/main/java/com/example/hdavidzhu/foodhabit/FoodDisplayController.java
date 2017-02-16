@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class FoodDisplayController {
 
     private Context context;
-    private FoodSelectedListener listener;
+    private FoodDisplayControllerListener listener;
     private GestureDetector gestureDetector;
 
     @BindView(R.id.picture)
@@ -35,8 +35,8 @@ public class FoodDisplayController {
         imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
     }
 
-    public void setFoodSelectedListener(FoodSelectedListener foodSelectedListener) {
-        listener = foodSelectedListener;
+    public void setFoodSelectedListener(FoodDisplayControllerListener foodDisplayControllerListener) {
+        listener = foodDisplayControllerListener;
     }
 
     public void setPhotoUri(Uri photoUri) {
@@ -63,9 +63,9 @@ public class FoodDisplayController {
                                 (int) sCoord.y,
                                 sourceBitmap.getWidth() / 3,
                                 sourceBitmap.getHeight() / 3);
-                        listener.onFoodSelected(croppedImage);
+                        listener.onFoodImageSelected(croppedImage);
                         BackendProvider.getInstance().analyzeFood(croppedImage).subscribe(food -> {
-                            Timber.i(food.predictions.toString());
+                            listener.onFoodPredictionsReceived(food.predictions);
                         });
                     } catch (IOException e1) {
                         e1.printStackTrace();
