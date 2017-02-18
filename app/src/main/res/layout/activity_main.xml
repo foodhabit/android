@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_take_picture" />
 
-        <com.example.hdavidzhu.foodhabit.PinView
+        <com.example.hdavidzhu.foodhabit.AnnotationView
             android:id="@+id/picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

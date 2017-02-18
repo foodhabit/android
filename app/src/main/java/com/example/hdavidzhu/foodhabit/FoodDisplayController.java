@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.view.GestureDetector;
+import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -19,61 +19,79 @@ import timber.log.Timber;
 
 public class FoodDisplayController {
 
-    private Context context;
     private FoodDisplayControllerListener listener;
-    private GestureDetector gestureDetector;
 
     @BindView(R.id.picture)
-    PinView imageView;
+    AnnotationView imageView;
 
     private Uri photoUri;
 
-    public FoodDisplayController(Context context) {
-        this.context = context;
+    private PointF downSCoord;
+    private PointF upSCoord;
+
+    FoodDisplayController(Context context) {
         ButterKnife.bind(this, (Activity) context);
-        gestureDetector = createGestureDetector();
-        imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
+        imageView.setOnTouchListener((view, motionEvent) -> {
+            view.getParent().requestDisallowInterceptTouchEvent(true);
+            int action = MotionEventCompat.getActionMasked(motionEvent);
+            switch (action) {
+                case (MotionEvent.ACTION_DOWN):
+                    Timber.d("Action was DOWN");
+
+                    downSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
+                    Timber.d(downSCoord.toString());
+                    imageView.setCorner1(downSCoord);
+
+                    return true;
+                case (MotionEvent.ACTION_MOVE):
+                    Timber.d("Action was MOVE");
+
+                    upSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
+                    Timber.d(upSCoord.toString());
+                    imageView.setCorner2(upSCoord);
+
+                    return true;
+                case (MotionEvent.ACTION_UP):
+                    Timber.d("Action was UP");
+
+                    upSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
+                    Timber.d(upSCoord.toString());
+                    imageView.setCorner2(upSCoord);
+
+                    if (imageView.isReady()) {
+                        try {
+                            Bitmap sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+                            // TODO: Choose a good crop size.
+                            Bitmap croppedImage = Bitmap.createBitmap(
+                                    sourceBitmap,
+                                    (int) downSCoord.x,
+                                    (int) downSCoord.y,
+                                    (int) (upSCoord.x - downSCoord.x),
+                                    (int) (upSCoord.y - downSCoord.y));
+                            listener.onFoodImageSelected(croppedImage);
+                            BackendProvider.getInstance().analyzeFood(croppedImage).subscribe(food -> {
+                                listener.onFoodPredictionsReceived(food.predictions);
+                            });
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        });
     }
 
-    public void setFoodSelectedListener(FoodDisplayControllerListener foodDisplayControllerListener) {
+    void setFoodSelectedListener(FoodDisplayControllerListener foodDisplayControllerListener) {
         listener = foodDisplayControllerListener;
     }
 
-    public void setPhotoUri(Uri photoUri) {
+    void setPhotoUri(Uri photoUri) {
         this.photoUri = photoUri;
     }
 
-    public void updateView() {
+    void updateView() {
         imageView.setImage(ImageSource.uri(photoUri));
-    }
-
-    private GestureDetector createGestureDetector() {
-        return new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (imageView.isReady()) {
-                    PointF sCoord = imageView.viewToSourceCoord(e.getX(), e.getY());
-                    Timber.d(sCoord.toString()); // TODO: Remove
-                    try {
-                        Bitmap sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
-                        // TODO: Choose a good crop size.
-                        Bitmap croppedImage = Bitmap.createBitmap(
-                                sourceBitmap,
-                                (int) sCoord.x,
-                                (int) sCoord.y,
-                                sourceBitmap.getWidth() / 3,
-                                sourceBitmap.getHeight() / 3);
-                        listener.onFoodImageSelected(croppedImage);
-                        BackendProvider.getInstance().analyzeFood(croppedImage).subscribe(food -> {
-                            listener.onFoodPredictionsReceived(food.predictions);
-                        });
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    imageView.setPin(sCoord);
-                }
-                return true;
-            }
-        });
     }
 }
