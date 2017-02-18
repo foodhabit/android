@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/list_item_food"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <!-- A CardView that contains a TextView -->
@@ -17,6 +18,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="testing" />
+            android:text="@string/testing" />
     </android.support.v7.widget.CardView>
 </LinearLayout>

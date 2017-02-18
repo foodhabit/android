@@ -13,13 +13,14 @@ import java.util.List;
 public class FoodListAdapter extends RecyclerView.Adapter<FoodListViewHolder> {
 
     private List<Food> foodList = new ArrayList<>();
+    private FoodItemListener foodItemListener;
 
     @Override
     public FoodListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout view = (LinearLayout) LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.list_item_food, parent, false);
-        return new FoodListViewHolder(view);
+                .inflate(FoodListViewHolder.LAYOUT, parent, false);
+        return new FoodListViewHolder(view, foodItemListener);
     }
 
     @Override
@@ -35,5 +36,9 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListViewHolder> {
     public void setFoodList(List<Food> foodList) {
         this.foodList = foodList;
         notifyDataSetChanged();
+    }
+
+    public void setFoodItemListener(FoodItemListener listener) {
+        foodItemListener = listener;
     }
 }

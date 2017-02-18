@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static java.text.DateFormat.getDateTimeInstance;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
 
         foodListAdapter = new FoodListAdapter();
         foodListView.setAdapter(foodListAdapter);
+        foodListAdapter.setFoodItemListener(food -> Timber.d(food.toString()));
     }
 
     @OnClick(R.id.btn_take_picture)

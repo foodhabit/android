@@ -2,4 +2,6 @@
     <string name="app_name">FoodHabit</string>
     <string name="btn_take_picture">Take picture</string>
     <string name="timestamp_format">yyyyMMdd_HHmmss</string>
+    <string name="selected">Selected:</string>
+    <string name="testing">testing</string>
 </resources>
