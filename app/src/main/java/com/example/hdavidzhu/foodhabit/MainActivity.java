@@ -16,13 +16,13 @@ import com.example.hdavidzhu.foodhabit.models.Food;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static java.text.DateFormat.getDateTimeInstance;
 
@@ -34,12 +34,16 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     private Uri photoUri;
     private FoodDisplayController foodDisplayController;
     private FoodListAdapter foodListAdapter;
+    private FoodListAdapter selectedFoodListAdapter;
 
     @BindView(R.id.cropped_food)
     ImageView croppedFoodImageView;
 
     @BindView(R.id.food_list)
     RecyclerView foodListView;
+
+    @BindView(R.id.selected_food_list)
+    RecyclerView selectedFoodLIstView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +55,11 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
 
         foodListAdapter = new FoodListAdapter();
         foodListView.setAdapter(foodListAdapter);
-        foodListAdapter.setFoodItemListener(food -> Timber.d(food.toString()));
+
+        selectedFoodListAdapter = new FoodListAdapter();
+        selectedFoodLIstView.setAdapter(selectedFoodListAdapter);
+
+        foodListAdapter.setFoodItemListener(food -> selectedFoodListAdapter.setFoodList(Collections.singletonList(food)));
     }
 
     @OnClick(R.id.btn_take_picture)

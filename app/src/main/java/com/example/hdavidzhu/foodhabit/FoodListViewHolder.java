@@ -29,7 +29,9 @@ public class FoodListViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.list_item_food)
     public void onListItemClicked() {
-        listener.onFoodSelected(food);
+        if (listener != null) {
+            listener.onFoodSelected(food);
+        }
     }
 
     public void setFood(Food food) {
