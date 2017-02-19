@@ -16,6 +16,7 @@ import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayControllerListener;
 import com.example.hdavidzhu.foodhabit.components.food_selections.FoodSelectionsAdapter;
+import com.example.hdavidzhu.foodhabit.models.Food;
 import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
 import java.io.File;
@@ -83,8 +84,10 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     public void onFoodImageSelected(Bitmap foodBitmap) {
         croppedFoodImageView.setImageBitmap(foodBitmap);
         try {
-            BackendProvider.getInstance().analyzeFood(foodBitmap).subscribe(food -> {
-                foodSelectionsAdapter.setFoodList(food.predictions);
+            BackendProvider.getInstance().analyzeFood(foodBitmap).subscribe(foodPrediction -> {
+                Food food = foodPrediction.predictions.get(0);
+                food.setAlternatives(foodPrediction.predictions.subList(1, foodPrediction.predictions.size()));
+                foodSelectionsAdapter.setFoodList(Collections.singletonList(food));
             });
         } catch (IOException e) {
             e.printStackTrace();
