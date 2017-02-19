@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit.components;
+package com.example.hdavidzhu.foodhabit.components.food_item;
 
 import com.example.hdavidzhu.foodhabit.models.Food;
 

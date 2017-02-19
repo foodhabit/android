@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit.components;
+package com.example.hdavidzhu.foodhabit.components.food_display;
 
 import android.graphics.Bitmap;
 

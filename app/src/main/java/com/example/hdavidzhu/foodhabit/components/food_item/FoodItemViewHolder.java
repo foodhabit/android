@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit.components;
+package com.example.hdavidzhu.foodhabit.components.food_item;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,7 +11,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FoodListViewHolder extends RecyclerView.ViewHolder {
+public class FoodItemViewHolder extends RecyclerView.ViewHolder {
 
     public static final int LAYOUT = R.layout.list_item_food;
 
@@ -22,7 +22,7 @@ public class FoodListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.food_name)
     TextView foodNameView;
 
-    public FoodListViewHolder(View itemView, FoodItemListener listener) {
+    public FoodItemViewHolder(View itemView, FoodItemListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.listener = listener;

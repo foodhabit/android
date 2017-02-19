@@ -1,30 +1,32 @@
-package com.example.hdavidzhu.foodhabit.components;
+package com.example.hdavidzhu.foodhabit.components.food_list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.example.hdavidzhu.foodhabit.components.food_item.FoodItemListener;
+import com.example.hdavidzhu.foodhabit.components.food_item.FoodItemViewHolder;
 import com.example.hdavidzhu.foodhabit.models.Food;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodListAdapter extends RecyclerView.Adapter<FoodListViewHolder> {
+public class FoodListAdapter extends RecyclerView.Adapter<FoodItemViewHolder> {
 
     private List<Food> foodList = new ArrayList<>();
     private FoodItemListener foodItemListener;
 
     @Override
-    public FoodListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FoodItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout view = (LinearLayout) LayoutInflater
                 .from(parent.getContext())
-                .inflate(FoodListViewHolder.LAYOUT, parent, false);
-        return new FoodListViewHolder(view, foodItemListener);
+                .inflate(FoodItemViewHolder.LAYOUT, parent, false);
+        return new FoodItemViewHolder(view, foodItemListener);
     }
 
     @Override
-    public void onBindViewHolder(FoodListViewHolder holder, int position) {
+    public void onBindViewHolder(FoodItemViewHolder holder, int position) {
         holder.setFood(foodList.get(position));
     }
 

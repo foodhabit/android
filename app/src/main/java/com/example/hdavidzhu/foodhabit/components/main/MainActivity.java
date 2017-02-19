@@ -13,9 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.example.hdavidzhu.foodhabit.R;
-import com.example.hdavidzhu.foodhabit.components.FoodDisplayController;
-import com.example.hdavidzhu.foodhabit.components.FoodDisplayControllerListener;
-import com.example.hdavidzhu.foodhabit.components.FoodListAdapter;
+import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
+import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayControllerListener;
+import com.example.hdavidzhu.foodhabit.components.food_list.FoodListAdapter;
 import com.example.hdavidzhu.foodhabit.models.Food;
 import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
