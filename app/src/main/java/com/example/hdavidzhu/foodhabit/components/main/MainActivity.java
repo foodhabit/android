@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayControllerListener;
-import com.example.hdavidzhu.foodhabit.components.food_list.FoodListAdapter;
+import com.example.hdavidzhu.foodhabit.components.food_selections.FoodSelectionsAdapter;
 import com.example.hdavidzhu.foodhabit.models.Food;
 import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     private File photoFile;
     private Uri photoUri;
     private FoodDisplayController foodDisplayController;
-    private FoodListAdapter foodListAdapter;
-    private FoodListAdapter selectedFoodListAdapter;
+    private FoodSelectionsAdapter foodSelectionsAdapter;
+    private FoodSelectionsAdapter selectedFoodSelectionsAdapter;
 
     @BindView(R.id.cropped_food)
     ImageView croppedFoodImageView;
@@ -58,13 +58,13 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
         foodDisplayController = new FoodDisplayController(this);
         foodDisplayController.setFoodSelectedListener(this);
 
-        foodListAdapter = new FoodListAdapter();
-        foodListView.setAdapter(foodListAdapter);
+        foodSelectionsAdapter = new FoodSelectionsAdapter();
+        foodListView.setAdapter(foodSelectionsAdapter);
 
-        selectedFoodListAdapter = new FoodListAdapter();
-        selectedFoodLIstView.setAdapter(selectedFoodListAdapter);
+        selectedFoodSelectionsAdapter = new FoodSelectionsAdapter();
+        selectedFoodLIstView.setAdapter(selectedFoodSelectionsAdapter);
 
-        foodListAdapter.setFoodItemListener(food -> selectedFoodListAdapter.setFoodList(Collections.singletonList(food)));
+        foodSelectionsAdapter.setFoodItemListener(food -> selectedFoodSelectionsAdapter.setFoodList(Collections.singletonList(food)));
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
                     .getInstance()
                     .analyzeFood(photoFile)
                     .subscribe(food -> {
-                        foodListAdapter.setFoodList(food.predictions);
+                        foodSelectionsAdapter.setFoodList(food.predictions);
                     });
         }
     }
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
 
     @Override
     public void onFoodPredictionsReceived(List<Food> predictions) {
-        foodListAdapter.setFoodList(predictions);
+        foodSelectionsAdapter.setFoodList(predictions);
     }
 
     private void dispatchTakePictureIntent() {

@@ -22,20 +22,23 @@ import timber.log.Timber;
 
 public class FoodDisplayController {
 
+    private Uri photoUri;
+    private PointF downSCoord;
+    private PointF upSCoord;
+
     private FoodDisplayControllerListener listener;
 
     @BindView(R.id.picture)
     AnnotationView imageView;
 
-    private Uri photoUri;
-
-    private PointF downSCoord;
-    private PointF upSCoord;
-
     public FoodDisplayController(Context context) {
         ButterKnife.bind(this, (Activity) context);
         imageView.setOnTouchListener((view, motionEvent) -> {
+
+            // Prevents the parent from capturing any events.
+            // This way, the touch events won't cause the parent to scroll.
             view.getParent().requestDisallowInterceptTouchEvent(true);
+
             int action = MotionEventCompat.getActionMasked(motionEvent);
             switch (action) {
                 case (MotionEvent.ACTION_DOWN):
