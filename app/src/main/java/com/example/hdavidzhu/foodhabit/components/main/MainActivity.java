@@ -16,14 +16,12 @@ import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayControllerListener;
 import com.example.hdavidzhu.foodhabit.components.food_selections.FoodSelectionsAdapter;
-import com.example.hdavidzhu.foodhabit.models.Food;
 import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         foodDisplayController = new FoodDisplayController(this);
         foodDisplayController.setFoodSelectedListener(this);
 
@@ -76,31 +75,20 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
-            // Update the view
-            foodDisplayController.setPhotoUri(photoUri);
-            foodDisplayController.updateView();
-
-            assert photoFile != null;
-
-            // Get food analysis
-            BackendProvider
-                    .getInstance()
-                    .analyzeFood(photoFile)
-                    .subscribe(food -> {
-                        foodSelectionsAdapter.setFoodList(food.predictions);
-                    });
+            foodDisplayController.setPhotoUri(photoUri); // Update the food display
         }
     }
 
     @Override
     public void onFoodImageSelected(Bitmap foodBitmap) {
         croppedFoodImageView.setImageBitmap(foodBitmap);
-    }
-
-    @Override
-    public void onFoodPredictionsReceived(List<Food> predictions) {
-        foodSelectionsAdapter.setFoodList(predictions);
+        try {
+            BackendProvider.getInstance().analyzeFood(foodBitmap).subscribe(food -> {
+                foodSelectionsAdapter.setFoodList(food.predictions);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void dispatchTakePictureIntent() {

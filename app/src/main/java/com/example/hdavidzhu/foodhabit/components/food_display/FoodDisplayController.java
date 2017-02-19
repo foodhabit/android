@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.hdavidzhu.foodhabit.R;
-import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 import com.example.hdavidzhu.foodhabit.views.AnnotationView;
 
 import java.io.IOException;
@@ -65,8 +64,9 @@ public class FoodDisplayController {
                     imageView.setCorner2(upSCoord);
 
                     if (imageView.isReady()) {
+                        Bitmap sourceBitmap = null;
                         try {
-                            Bitmap sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+                            sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
                             // TODO: Choose a good crop size.
                             Bitmap croppedImage = Bitmap.createBitmap(
                                     sourceBitmap,
@@ -75,11 +75,8 @@ public class FoodDisplayController {
                                     (int) (upSCoord.x - downSCoord.x),
                                     (int) (upSCoord.y - downSCoord.y));
                             listener.onFoodImageSelected(croppedImage);
-                            BackendProvider.getInstance().analyzeFood(croppedImage).subscribe(food -> {
-                                listener.onFoodPredictionsReceived(food.predictions);
-                            });
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                     return true;
@@ -95,9 +92,6 @@ public class FoodDisplayController {
 
     public void setPhotoUri(Uri photoUri) {
         this.photoUri = photoUri;
-    }
-
-    public void updateView() {
         imageView.setImage(ImageSource.uri(photoUri));
     }
 }
