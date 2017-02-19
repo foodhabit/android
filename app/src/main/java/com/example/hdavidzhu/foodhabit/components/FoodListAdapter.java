@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.components;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

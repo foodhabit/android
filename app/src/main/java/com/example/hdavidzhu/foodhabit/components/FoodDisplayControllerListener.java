@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.components;
 
 import android.graphics.Bitmap;
 
@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface FoodDisplayControllerListener {
     void onFoodImageSelected(Bitmap foodBitmap);
-
     void onFoodPredictionsReceived(List<Food> predictions);
 }

@@ -1,9 +1,10 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.components;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.models.Food;
 
 import butterknife.BindView;

@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.components;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.hdavidzhu.foodhabit.R;
+import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
+import com.example.hdavidzhu.foodhabit.views.AnnotationView;
 
 import java.io.IOException;
 
@@ -29,7 +32,7 @@ public class FoodDisplayController {
     private PointF downSCoord;
     private PointF upSCoord;
 
-    FoodDisplayController(Context context) {
+    public FoodDisplayController(Context context) {
         ButterKnife.bind(this, (Activity) context);
         imageView.setOnTouchListener((view, motionEvent) -> {
             view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -83,15 +86,15 @@ public class FoodDisplayController {
         });
     }
 
-    void setFoodSelectedListener(FoodDisplayControllerListener foodDisplayControllerListener) {
+    public void setFoodSelectedListener(FoodDisplayControllerListener foodDisplayControllerListener) {
         listener = foodDisplayControllerListener;
     }
 
-    void setPhotoUri(Uri photoUri) {
+    public void setPhotoUri(Uri photoUri) {
         this.photoUri = photoUri;
     }
 
-    void updateView() {
+    public void updateView() {
         imageView.setImage(ImageSource.uri(photoUri));
     }
 }

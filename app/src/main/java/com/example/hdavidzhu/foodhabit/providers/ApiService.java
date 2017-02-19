@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.providers;
 
 import com.example.hdavidzhu.foodhabit.models.FoodPrediction;
 

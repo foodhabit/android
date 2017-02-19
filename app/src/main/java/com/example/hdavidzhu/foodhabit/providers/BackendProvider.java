@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.providers;
 
 import android.content.Context;
 import android.graphics.Bitmap;

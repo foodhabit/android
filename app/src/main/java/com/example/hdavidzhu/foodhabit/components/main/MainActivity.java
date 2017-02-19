@@ -1,4 +1,4 @@
-package com.example.hdavidzhu.foodhabit;
+package com.example.hdavidzhu.foodhabit.components.main;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,7 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
+import com.example.hdavidzhu.foodhabit.R;
+import com.example.hdavidzhu.foodhabit.components.FoodDisplayController;
+import com.example.hdavidzhu.foodhabit.components.FoodDisplayControllerListener;
+import com.example.hdavidzhu.foodhabit.components.FoodListAdapter;
 import com.example.hdavidzhu.foodhabit.models.Food;
+import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
 import java.io.File;
 import java.io.IOException;
