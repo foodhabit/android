@@ -12,7 +12,7 @@ import com.example.hdavidzhu.foodhabit.models.Food;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodSelectionsAdapter extends RecyclerView.Adapter<FoodSelectionViewHolder> {
+public class FoodSelectionsAdapter extends RecyclerView.Adapter<FoodSelectionViewHolder> implements ItemTouchHelperAdapter {
 
     private List<Food> foodList = new ArrayList<>();
     private FoodSelectionListener foodSelectionListener;
@@ -40,9 +40,27 @@ public class FoodSelectionsAdapter extends RecyclerView.Adapter<FoodSelectionVie
         notifyDataSetChanged();
     }
 
+    public void addFood(Food food) {
+        foodList.add(food);
+        notifyItemInserted(foodList.size() - 1);
+    }
+
     // TODO: This is currently not used, but may be useful.
     // If not used, please delete.
     public void setFoodSelectionListener(FoodSelectionListener listener) {
         foodSelectionListener = listener;
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Food food = foodList.remove(fromPosition);
+        foodList.add(toPosition, food);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        foodList.remove(position);
+        notifyItemRemoved(position);
     }
 }

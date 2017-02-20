@@ -10,17 +10,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayControllerListener;
 import com.example.hdavidzhu.foodhabit.components.food_selections.FoodSelectionsAdapter;
+import com.example.hdavidzhu.foodhabit.components.food_selections.FoodSelectionsTouchHelperCallback;
 import com.example.hdavidzhu.foodhabit.models.Food;
 import com.example.hdavidzhu.foodhabit.providers.BackendProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     private FoodSelectionsAdapter foodSelectionsAdapter;
 
     @BindView(R.id.food_list)
-    RecyclerView foodListView;
+    RecyclerView foodSelectionsView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +52,10 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
         foodDisplayController.setFoodSelectedListener(this);
 
         foodSelectionsAdapter = new FoodSelectionsAdapter();
-        foodListView.setAdapter(foodSelectionsAdapter);
+        foodSelectionsView.setAdapter(foodSelectionsAdapter);
+        ItemTouchHelper.Callback callback = new FoodSelectionsTouchHelperCallback(foodSelectionsAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(foodSelectionsView);
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
                 Food food = foodPrediction.predictions.get(0);
                 food.setSnapshot(foodBitmap);
                 food.setAlternatives(foodPrediction.predictions.subList(1, foodPrediction.predictions.size()));
-                foodSelectionsAdapter.setFoodList(Collections.singletonList(food));
+                foodSelectionsAdapter.addFood(food);
             });
         } catch (IOException e) {
             e.printStackTrace();
