@@ -6,7 +6,7 @@
     android:id="@+id/food_selection"
     android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/food_selection_header_height"
     card_view:cardCornerRadius="0dp">
 
     <RelativeLayout
@@ -15,14 +15,16 @@
 
         <ImageView
             android:id="@+id/food_snapshot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="@dimen/food_selection_header_height"
+            android:layout_height="@dimen/food_selection_header_height"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/food_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@string/testing" />
+            android:text="@string/testing"
+            android:layout_toEndOf="@id/food_snapshot" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

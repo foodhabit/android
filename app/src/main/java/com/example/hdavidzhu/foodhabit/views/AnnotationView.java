@@ -44,6 +44,14 @@ public class AnnotationView extends SubsamplingScaleImageView {
         invalidate();
     }
 
+    public PointF getUpperLeft() {
+        return new PointF(Math.min(corner1.x, corner2.x), Math.min(corner1.y, corner2.y));
+    }
+
+    public PointF getLowerRight() {
+        return new PointF(Math.max(corner1.x, corner2.x), Math.max(corner1.y, corner2.y));
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -53,9 +61,8 @@ public class AnnotationView extends SubsamplingScaleImageView {
         if (corner1 == null || corner2 == null) {
             return;
         }
-
-        PointF vCorner1 = sourceToViewCoord(corner1);
-        PointF vCorner2 = sourceToViewCoord(corner2);
-        canvas.drawRect(vCorner1.x, vCorner1.y, vCorner2.x, vCorner2.y, paint);
+        PointF upperLeft = sourceToViewCoord(getUpperLeft());
+        PointF lowerRight = sourceToViewCoord(getLowerRight());
+        canvas.drawRect(upperLeft.x, upperLeft.y, lowerRight.x, lowerRight.y, paint);
     }
 }

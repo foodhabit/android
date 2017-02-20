@@ -68,12 +68,14 @@ public class FoodDisplayController {
                         try {
                             sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
                             // TODO: Choose a good crop size.
+                            PointF upperLeft = imageView.getUpperLeft();
+                            PointF lowerRight = imageView.getLowerRight();
                             Bitmap croppedImage = Bitmap.createBitmap(
                                     sourceBitmap,
-                                    (int) downSCoord.x,
-                                    (int) downSCoord.y,
-                                    (int) (upSCoord.x - downSCoord.x),
-                                    (int) (upSCoord.y - downSCoord.y));
+                                    (int) upperLeft.x,
+                                    (int) upperLeft.y,
+                                    (int) (lowerRight.x - upperLeft.x),
+                                    (int) (lowerRight.y - upperLeft.y));
                             listener.onFoodImageSelected(croppedImage);
                         } catch (IOException e) {
                             e.printStackTrace();
