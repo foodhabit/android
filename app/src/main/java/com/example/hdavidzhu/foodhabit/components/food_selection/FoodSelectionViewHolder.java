@@ -2,6 +2,7 @@ package com.example.hdavidzhu.foodhabit.components.food_selection;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hdavidzhu.foodhabit.R;
@@ -19,6 +20,9 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
     private Food food;
 
 
+    @BindView(R.id.food_snapshot)
+    ImageView foodSnapshotView;
+
     @BindView(R.id.food_name)
     TextView foodNameView;
 
@@ -28,7 +32,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
         this.listener = listener;
     }
 
-    @OnClick(R.id.list_item_food)
+    @OnClick(R.id.food_selection)
     public void onListItemClicked() {
         if (listener != null) {
             listener.onFoodSelected(food);
@@ -37,6 +41,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
     public void setFood(Food food) {
         this.food = food;
-        foodNameView.setText(food.name);
+        foodSnapshotView.setImageBitmap(food.getSnapshot());
+        foodNameView.setText(food.getName());
     }
 }

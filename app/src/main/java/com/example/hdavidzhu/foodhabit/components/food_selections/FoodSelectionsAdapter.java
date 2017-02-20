@@ -1,9 +1,9 @@
 package com.example.hdavidzhu.foodhabit.components.food_selections;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.hdavidzhu.foodhabit.components.food_selection.FoodSelectionListener;
 import com.example.hdavidzhu.foodhabit.components.food_selection.FoodSelectionViewHolder;
@@ -15,14 +15,14 @@ import java.util.List;
 public class FoodSelectionsAdapter extends RecyclerView.Adapter<FoodSelectionViewHolder> {
 
     private List<Food> foodList = new ArrayList<>();
-    private FoodSelectionListener foodItemListener;
+    private FoodSelectionListener foodSelectionListener;
 
     @Override
     public FoodSelectionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LinearLayout view = (LinearLayout) LayoutInflater
+        CardView view = (CardView) LayoutInflater
                 .from(parent.getContext())
                 .inflate(FoodSelectionViewHolder.LAYOUT, parent, false);
-        return new FoodSelectionViewHolder(view, foodItemListener);
+        return new FoodSelectionViewHolder(view, foodSelectionListener);
     }
 
     @Override
@@ -40,7 +40,9 @@ public class FoodSelectionsAdapter extends RecyclerView.Adapter<FoodSelectionVie
         notifyDataSetChanged();
     }
 
-    public void setFoodItemListener(FoodSelectionListener listener) {
-        foodItemListener = listener;
+    // TODO: This is currently not used, but may be useful.
+    // If not used, please delete.
+    public void setFoodSelectionListener(FoodSelectionListener listener) {
+        foodSelectionListener = listener;
     }
 }

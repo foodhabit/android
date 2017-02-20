@@ -17,8 +17,40 @@ public class Food {
         return name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNdbno() {
+        return ndbno;
+    }
+
+    public void setNdbno(String ndbno) {
+        this.ndbno = ndbno;
+    }
+
+    public Bitmap getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(Bitmap snapshot) {
+        this.snapshot = snapshot;
+    }
+
     public List<Food> getAlternatives() {
         return alternatives;
+    }
+
+    public List<String> getQueries() {
+        return queries;
+    }
+
+    public void setQueries(List<String> queries) {
+        this.queries = queries;
     }
 
     public void setAlternatives(List<Food> alternatives) {

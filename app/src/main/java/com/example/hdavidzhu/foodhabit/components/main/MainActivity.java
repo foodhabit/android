@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ImageView;
 
 import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.components.food_display.FoodDisplayController;
@@ -38,16 +37,9 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     private Uri photoUri;
     private FoodDisplayController foodDisplayController;
     private FoodSelectionsAdapter foodSelectionsAdapter;
-    private FoodSelectionsAdapter selectedFoodSelectionsAdapter;
-
-    @BindView(R.id.cropped_food)
-    ImageView croppedFoodImageView;
 
     @BindView(R.id.food_list)
     RecyclerView foodListView;
-
-    @BindView(R.id.selected_food_list)
-    RecyclerView selectedFoodLIstView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,11 +52,6 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
 
         foodSelectionsAdapter = new FoodSelectionsAdapter();
         foodListView.setAdapter(foodSelectionsAdapter);
-
-        selectedFoodSelectionsAdapter = new FoodSelectionsAdapter();
-        selectedFoodLIstView.setAdapter(selectedFoodSelectionsAdapter);
-
-        foodSelectionsAdapter.setFoodItemListener(food -> selectedFoodSelectionsAdapter.setFoodList(Collections.singletonList(food)));
     }
 
     @OnClick(R.id.btn_take_picture)
@@ -82,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
 
     @Override
     public void onFoodImageSelected(Bitmap foodBitmap) {
-        croppedFoodImageView.setImageBitmap(foodBitmap);
         try {
             BackendProvider.getInstance().analyzeFood(foodBitmap).subscribe(foodPrediction -> {
                 Food food = foodPrediction.predictions.get(0);
+                food.setSnapshot(foodBitmap);
                 food.setAlternatives(foodPrediction.predictions.subList(1, foodPrediction.predictions.size()));
                 foodSelectionsAdapter.setFoodList(Collections.singletonList(food));
             });
