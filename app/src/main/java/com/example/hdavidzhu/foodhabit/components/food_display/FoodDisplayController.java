@@ -13,11 +13,11 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.hdavidzhu.foodhabit.R;
 import com.example.hdavidzhu.foodhabit.views.AnnotationView;
 
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class FoodDisplayController {
 
@@ -41,45 +41,33 @@ public class FoodDisplayController {
             int action = MotionEventCompat.getActionMasked(motionEvent);
             switch (action) {
                 case (MotionEvent.ACTION_DOWN):
-                    Timber.d("Action was DOWN");
-
                     downSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
-                    Timber.d(downSCoord.toString());
                     imageView.setCorner1(downSCoord);
-
                     return true;
+
                 case (MotionEvent.ACTION_MOVE):
-                    Timber.d("Action was MOVE");
-
                     upSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
-                    Timber.d(upSCoord.toString());
                     imageView.setCorner2(upSCoord);
-
                     return true;
+
                 case (MotionEvent.ACTION_UP):
-                    Timber.d("Action was UP");
-
                     upSCoord = imageView.viewToSourceCoord(motionEvent.getX(), motionEvent.getY());
-                    Timber.d(upSCoord.toString());
                     imageView.setCorner2(upSCoord);
-
                     if (imageView.isReady()) {
-                        Bitmap sourceBitmap = null;
-                        try {
-                            sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+                        Observable.fromCallable(() -> {
+                            Bitmap sourceBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
                             // TODO: Choose a good crop size.
                             PointF upperLeft = imageView.getUpperLeft();
                             PointF lowerRight = imageView.getLowerRight();
-                            Bitmap croppedImage = Bitmap.createBitmap(
+                            return Bitmap.createBitmap(
                                     sourceBitmap,
                                     (int) upperLeft.x,
                                     (int) upperLeft.y,
                                     (int) (lowerRight.x - upperLeft.x),
                                     (int) (lowerRight.y - upperLeft.y));
-                            listener.onFoodImageSelected(croppedImage);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        }).subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(croppedImage -> listener.onFoodImageSelected(croppedImage));
                     }
                     return true;
                 default:
