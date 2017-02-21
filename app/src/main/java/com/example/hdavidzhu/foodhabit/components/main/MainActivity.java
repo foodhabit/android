@@ -75,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements FoodDisplayContro
     public void onFoodImageSelected(Bitmap foodBitmap) {
         try {
             BackendProvider.getInstance().analyzeFood(foodBitmap).subscribe(foodPrediction -> {
-                Food food = foodPrediction.predictions.get(0);
+                Food food = foodPrediction.getFood();
                 food.setSnapshot(foodBitmap);
-                food.setAlternatives(foodPrediction.predictions.subList(1, foodPrediction.predictions.size()));
                 foodSelectionsAdapter.addFood(food);
             });
         } catch (IOException e) {
