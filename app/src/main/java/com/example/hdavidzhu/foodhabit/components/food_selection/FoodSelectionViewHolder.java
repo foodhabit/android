@@ -21,7 +21,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
     private FoodSelectionListener listener;
     private Food food;
     private boolean isExpanded;
-
+    private FoodAlternativesAdapter adapter;
 
     @BindView(R.id.food_snapshot)
     ImageView foodSnapshotView;
@@ -35,11 +35,17 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.food_queries)
     TagGroup foodQueriesView;
 
+    @BindView(R.id.food_alternatives)
+    RecyclerView foodAlternativesView;
+
     public FoodSelectionViewHolder(View itemView, FoodSelectionListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.listener = listener;
         setIsExpanded(false);
+
+        adapter = new FoodAlternativesAdapter();
+        foodAlternativesView.setAdapter(adapter);
     }
 
     @OnClick(R.id.food_selection)
@@ -52,6 +58,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
     public void setFood(Food food) {
         this.food = food;
+        adapter.setAlternatives(food.getAlternatives());
         foodSnapshotView.setImageBitmap(food.getSnapshot());
         foodNameView.setText(food.getName());
         foodQueriesView.setTags(food.queries);

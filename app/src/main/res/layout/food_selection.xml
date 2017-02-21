@@ -3,6 +3,7 @@
 <!-- A CardView that contains a TextView -->
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/food_selection"
     android:layout_gravity="center"
     android:layout_width="match_parent"
@@ -43,6 +44,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/food_alternatives"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager" />
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
