@@ -2,5 +2,5 @@
 <PreferenceScreen>
     <external-path
         name="my_images"
-        path="Android/data/com.example.hdavidzhu.foodhabit/files/Pictures" />
+        path="Android/data/com.leafmoment.app.foodhabit/files/Pictures" />
 </PreferenceScreen>

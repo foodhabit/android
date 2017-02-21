@@ -9,7 +9,7 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.example.hdavidzhu.foodhabit.components.main.MainActivity"
+        tools:context="com.leafmoment.app.foodhabit.components.main.MainActivity"
         android:orientation="vertical">
 
         <Button
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_take_picture" />
 
-        <com.example.hdavidzhu.foodhabit.views.AnnotationView
+        <com.leafmoment.app.foodhabit.views.AnnotationView
             android:id="@+id/picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
