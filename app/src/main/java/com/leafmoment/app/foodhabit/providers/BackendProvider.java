@@ -52,7 +52,7 @@ public class BackendProvider {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://30df09d6.ngrok.io") // TODO: Change this to a permanent endpoint.
+                .baseUrl("https://foodhabit.herokuapp.com") // TODO: Change this to a permanent endpoint.
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
