@@ -2,22 +2,21 @@ package com.leafmoment.app.foodhabit.components.food_selection;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.leafmoment.app.foodhabit.R;
-import com.leafmoment.app.foodhabit.components.food_search.FoodSearchDialog;
-import com.leafmoment.app.foodhabit.components.food_search.FoodSearchDialogListener;
 import com.leafmoment.app.foodhabit.models.Food;
+import com.leafmoment.app.foodhabit.providers.BackendProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.gujun.android.taggroup.TagGroup;
-import timber.log.Timber;
 
-public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements FoodSearchDialogListener {
+public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
     public static final int LAYOUT = R.layout.food_selection;
 
@@ -26,7 +25,6 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements 
 
     private FoodSelectionListener listener;
     private FoodAlternativesAdapter adapter;
-    private FoodSearchDialog searchDialog;
 
     @BindView(R.id.food_snapshot)
     ImageView foodSnapshotView;
@@ -40,6 +38,9 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements 
     @BindView(R.id.food_queries)
     TagGroup foodQueriesView;
 
+    @BindView(R.id.input_food_search)
+    EditText foodSearchInputView;
+
     @BindView(R.id.food_alternatives)
     RecyclerView foodAlternativesView;
 
@@ -51,9 +52,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements 
 
         adapter = new FoodAlternativesAdapter();
         foodAlternativesView.setAdapter(adapter);
-        foodQueriesView.setOnTagClickListener(tag -> Timber.d(tag));
-
-        searchDialog = new FoodSearchDialog(itemView.getContext(), this);
+        foodQueriesView.setOnTagClickListener(this::updateFood);
     }
 
     @OnClick(R.id.food_selection)
@@ -66,13 +65,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements 
 
     @OnClick(R.id.btn_food_search)
     public void onFoodSearchButtonClicked() {
-        searchDialog.onSearchButtonClicked();
-    }
-
-
-    @Override
-    public void onSearchTermAdded(String searchTerm) {
-        foodQueriesView.setTags(searchTerm);
+        updateFood(foodSearchInputView.getText().toString());
     }
 
     public void setFood(Food food) {
@@ -90,5 +83,11 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements 
 
     private void toggleIsExpanded() {
         setIsExpanded(!isExpanded);
+    }
+
+    private void updateFood(String searchTerm) {
+        BackendProvider.getInstance().searchFood(searchTerm).subscribe(foodSearchResponse -> {
+            setFood(foodSearchResponse.getFood());
+        });
     }
 }

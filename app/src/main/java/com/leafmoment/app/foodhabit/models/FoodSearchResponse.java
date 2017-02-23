@@ -3,7 +3,7 @@ package com.leafmoment.app.foodhabit.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodPrediction {
+public class FoodSearchResponse {
     public String query;
     public List<String> queries;
     public List<Food> searchResults;

@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.leafmoment.app.foodhabit.models.FoodPrediction;
+import com.leafmoment.app.foodhabit.models.FoodSearchResponse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,7 +52,7 @@ public class BackendProvider {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://foodhabit.herokuapp.com") // TODO: Change this to a permanent endpoint.
+                .baseUrl("https://30df09d6.ngrok.io") // TODO: Change this to a permanent endpoint.
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -74,7 +74,14 @@ public class BackendProvider {
         return apiService;
     }
 
-    public Observable<FoodPrediction> analyzeFood(Bitmap foodBitmap) throws IOException {
+    public Observable<FoodSearchResponse> searchFood(String searchTerm) {
+        return getApi()
+                .search(searchTerm)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<FoodSearchResponse> analyzeFood(Bitmap foodBitmap) throws IOException {
         return Observable.fromCallable(() -> {
             String timeStamp = getDateTimeInstance().format(new Date());
             String foodImageFileName = "JPEG_" + timeStamp + "_";
@@ -96,14 +103,14 @@ public class BackendProvider {
         }).concatMap(this::analyzeFood);
     }
 
-    public Observable<FoodPrediction> analyzeFood(File foodImageFile) {
+    public Observable<FoodSearchResponse> analyzeFood(File foodImageFile) {
         String uriString = Uri.fromFile(foodImageFile).toString();
         return analyzeFood(
                 foodImageFile,
                 MediaType.parse(uriString.substring(uriString.lastIndexOf("."))));
     }
 
-    public Observable<FoodPrediction> analyzeFood(File foodImageFile, MediaType mediaType) {
+    public Observable<FoodSearchResponse> analyzeFood(File foodImageFile, MediaType mediaType) {
         RequestBody requestFile = RequestBody.create(mediaType, foodImageFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", foodImageFile.getName(), requestFile);
         return BackendProvider.getInstance().getApi()
