@@ -20,7 +20,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
     public static final int LAYOUT = R.layout.food_selection;
 
-    private Food food;
+    private int foodIndex;
     private boolean isExpanded;
 
     private FoodSelectionListener listener;
@@ -58,9 +58,6 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
     @OnClick(R.id.food_selection)
     public void onFoodSelectionClicked() {
         toggleIsExpanded();
-        if (listener != null) {
-            listener.onFoodSelected(food);
-        }
     }
 
     @OnClick(R.id.btn_food_search)
@@ -68,8 +65,8 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
         updateFood(foodSearchInputView.getText().toString());
     }
 
-    public void setFood(Food food) {
-        this.food = food;
+    public void setFood(Food food, int index) {
+        this.foodIndex = index;
         adapter.setAlternatives(food.getAlternatives());
         foodSnapshotView.setImageBitmap(food.getSnapshot());
         foodNameView.setText(food.getName());
@@ -87,7 +84,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
     private void updateFood(String searchTerm) {
         BackendProvider.getInstance().searchFood(searchTerm).subscribe(foodSearchResponse -> {
-            setFood(foodSearchResponse.getFood());
+            listener.onFoodUpdated(foodSearchResponse.getFood(), foodIndex);
         });
     }
 }
