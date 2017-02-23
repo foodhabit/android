@@ -13,4 +13,10 @@ public class MyApplication extends Application {
         Timber.plant(new Timber.DebugTree());
         BackendProvider.getInstance().setContext(this);
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        BackendProvider.getInstance().destroy();
+    }
 }

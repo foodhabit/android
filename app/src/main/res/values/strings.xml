@@ -4,4 +4,7 @@
     <string name="timestamp_format">yyyyMMdd_HHmmss</string>
     <string name="selected">Selected:</string>
     <string name="testing">testing</string>
+    <string name="search">Search</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

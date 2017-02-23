@@ -2,7 +2,6 @@
 
 <!-- A CardView that contains a TextView -->
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/food_selection"
     android:layout_gravity="center"
@@ -12,7 +11,7 @@
     android:layout_marginTop="@dimen/card_vertical_margin"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
-    card_view:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -43,6 +42,12 @@
                 android:id="@+id/food_queries"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_food_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/food_alternatives"

@@ -7,21 +7,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.leafmoment.app.foodhabit.R;
+import com.leafmoment.app.foodhabit.components.food_search.FoodSearchDialog;
+import com.leafmoment.app.foodhabit.components.food_search.FoodSearchDialogListener;
 import com.leafmoment.app.foodhabit.models.Food;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.gujun.android.taggroup.TagGroup;
+import timber.log.Timber;
 
-public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
+public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements FoodSearchDialogListener {
 
     public static final int LAYOUT = R.layout.food_selection;
 
-    private FoodSelectionListener listener;
     private Food food;
     private boolean isExpanded;
+
+    private FoodSelectionListener listener;
     private FoodAlternativesAdapter adapter;
+    private FoodSearchDialog searchDialog;
 
     @BindView(R.id.food_snapshot)
     ImageView foodSnapshotView;
@@ -46,6 +51,9 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
 
         adapter = new FoodAlternativesAdapter();
         foodAlternativesView.setAdapter(adapter);
+        foodQueriesView.setOnTagClickListener(tag -> Timber.d(tag));
+
+        searchDialog = new FoodSearchDialog(itemView.getContext(), this);
     }
 
     @OnClick(R.id.food_selection)
@@ -54,6 +62,17 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
         if (listener != null) {
             listener.onFoodSelected(food);
         }
+    }
+
+    @OnClick(R.id.btn_food_search)
+    public void onFoodSearchButtonClicked() {
+        searchDialog.onSearchButtonClicked();
+    }
+
+
+    @Override
+    public void onSearchTermAdded(String searchTerm) {
+        foodQueriesView.setTags(searchTerm);
     }
 
     public void setFood(Food food) {
