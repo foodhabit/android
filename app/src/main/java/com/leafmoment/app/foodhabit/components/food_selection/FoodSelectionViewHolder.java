@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.leafmoment.app.foodhabit.R;
+import com.leafmoment.app.foodhabit.components.food_alternative.FoodAlternativeListener;
 import com.leafmoment.app.foodhabit.models.Food;
 import com.leafmoment.app.foodhabit.providers.BackendProvider;
 
@@ -15,8 +16,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.gujun.android.taggroup.TagGroup;
+import timber.log.Timber;
 
-public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
+public class FoodSelectionViewHolder extends RecyclerView.ViewHolder implements FoodAlternativeListener {
 
     public static final int LAYOUT = R.layout.food_selection;
 
@@ -50,7 +52,7 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
         this.listener = listener;
         setIsExpanded(false);
 
-        adapter = new FoodAlternativesAdapter();
+        adapter = new FoodAlternativesAdapter(this);
         foodAlternativesView.setAdapter(adapter);
         foodQueriesView.setOnTagClickListener(this::updateFood);
     }
@@ -63,6 +65,12 @@ public class FoodSelectionViewHolder extends RecyclerView.ViewHolder {
     @OnClick(R.id.btn_food_search)
     public void onFoodSearchButtonClicked() {
         updateFood(foodSearchInputView.getText().toString());
+    }
+
+    @Override
+    public void onAlternativeClicked(Food alternativeFood) {
+        // TODO: Change the food object and update the alternatives
+        Timber.d("food clicked.");
     }
 
     public void setFood(Food food, int index) {
